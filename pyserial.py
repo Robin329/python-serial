@@ -27,14 +27,16 @@ async def serial_write_test(serial):
         serial.write("\n".encode('utf-8'))
         await serial.drain()
         await asyncio.sleep(1)
+        data = input("Please input:")
+        serial.write(data.encode('utf-8'))
 
 
 async def serial_read_test(serial):
     count = 0
     while True:
         data = await serial.readline()
-        p = time.strftime("%X", time.localtime())
-        print(f'received at:{count} {p} data:{data.decode()}')
+        p = time.strftime("%x", time.localtime())
+        print(f'{count} {p} : {data.decode()}')
         count += 1
 
 
@@ -68,7 +70,7 @@ def main():
     # 50,75,110,134,150,200,300,600,1200,1800,2400,4800,9600,19200,38400,57600,115200
     baud_input = input("Enter the baud rate(e.g., 9600/115200):")
     baud = int(baud_input) if baud_input.strip().isdigit() and int(baud_input) in [
-        50, 75, 110, 134, 150, 200, 300, 600, 1200, 1800, 2400, 4800, 9600, 19200, 38400, 57600, 115200] else 115200
+        50, 75, 110, 134, 150, 200, 300, 600, 1200, 1800, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 1500000] else 115200
     bytes_input = input("Enter the number of bytes(default:8):")
     bytes = int(bytes_input) if bytes_input.strip().isdigit() else 8
     parity_input = input("Enter the parity(default:N):")
@@ -85,4 +87,5 @@ if __name__ == '__main__':
     select_port = ports_list[port][0]
     # print(select_port)
     # ser = serial_open_test(select_port, baud_rate, bytes,  parity, stopbits)
-    asyncio.run(async_main(select_port, baud_rate))
+    # asyncio.run(async_main(select_port, baud_rate))
+    asyncio.run(async_main("COM7", 1500000))
